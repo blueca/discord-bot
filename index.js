@@ -1,6 +1,6 @@
 require('dotenv').config();
 const Discord = require('discord.js');
-const commands = require('./commands/index');
+const commands = require('./commands');
 
 const prefix = process.env.PREFIX;
 const client = new Discord.Client();

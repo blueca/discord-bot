@@ -1,6 +1,7 @@
 module.exports = {
   name: 'kick',
   description: 'kicks user (but not really)',
+  guildOnly: true,
   execute(msg, args) {
     if (!msg.mentions.users.size) {
       return msg.reply('no user tagged');

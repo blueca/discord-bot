@@ -15,12 +15,28 @@ client.on('message', (msg) => {
   if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
   const args = msg.content.slice(prefix.length).trim().split(/ +/);
-  const cmd = args.shift().toLowerCase();
+  const cmdName = args.shift().toLowerCase();
 
-  if (!client.commands.has(cmd)) return;
+  if (!client.commands.has(cmdName)) return;
+
+  const cmd = client.commands.get(cmdName);
+
+  if (cmd.guildOnly && msg.channel.type === 'dm') {
+    return msg.reply("I can't execute that command inside DMs.");
+  }
+
+  if (cmd.args && !args.length) {
+    let reply = `You didn't provide any arguments, ${msg.author}.`;
+
+    if (cmd.usage) {
+      reply += `\nCorrect usage would be: \`${prefix}${cmd.name} ${cmd.usage}\``;
+    }
+
+    return msg.channel.send(reply);
+  }
 
   try {
-    client.commands.get(cmd).execute(msg, args);
+    cmd.execute(msg, args);
   } catch (err) {
     console.error(err);
     msg.reply('error executing command.');

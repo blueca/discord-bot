@@ -4,6 +4,7 @@ const commands = require('./commands');
 
 const prefix = process.env.PREFIX;
 const client = new Discord.Client();
+const cooldowns = new Discord.Collection();
 
 client.commands = new Discord.Collection(Object.entries(commands));
 
@@ -34,6 +35,30 @@ client.on('message', (msg) => {
 
     return msg.channel.send(reply);
   }
+
+  if (!cooldowns.has(cmd.name)) {
+    cooldowns.set(cmd.name, new Discord.Collection());
+  }
+
+  const now = Date.now();
+  const timestamps = cooldowns.get(cmd.name);
+  const cooldownAmount = (cmd.cooldown || 3) * 1000;
+
+  if (timestamps.has(msg.author.id)) {
+    const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+
+    if (now < expirationTime) {
+      const remainingTime = (expirationTime - now) / 1000;
+      return msg.reply(
+        `please wait ${remainingTime.toFixed(
+          1
+        )} second(s) before reusing the \`${cmd.name}\` command.`
+      );
+    }
+  }
+
+  timestamps.set(msg.author.id, now);
+  setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
 
   try {
     cmd.execute(msg, args);

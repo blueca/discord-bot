@@ -18,9 +18,13 @@ client.on('message', (msg) => {
   const args = msg.content.slice(prefix.length).trim().split(/ +/);
   const cmdName = args.shift().toLowerCase();
 
-  if (!client.commands.has(cmdName)) return;
+  const cmd =
+    client.commands.get(cmdName) ||
+    client.commands.find(
+      (cmnd) => cmnd.aliases && cmnd.aliases.includes(cmdName)
+    );
 
-  const cmd = client.commands.get(cmdName);
+  if (!cmd) return;
 
   if (cmd.guildOnly && msg.channel.type === 'dm') {
     return msg.reply("I can't execute that command inside DMs.");

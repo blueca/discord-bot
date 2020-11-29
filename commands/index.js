@@ -7,6 +7,7 @@ const kick = require('./kick');
 const prune = require('./prune');
 const help = require('./help');
 const reload = require('./reload');
+const youtube = require('./youtube');
 
 module.exports = {
   test,
@@ -18,4 +19,5 @@ module.exports = {
   prune,
   help,
   reload,
+  youtube,
 };

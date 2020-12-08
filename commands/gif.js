@@ -15,6 +15,7 @@ module.exports = {
         const { results } = res.data;
         const random = Math.floor(results.length * Math.random());
         msg.channel.send(results[random].url);
+        msg.channel.send('Via Tenor');
       } else {
         this.handleError(res.status, msg);
       }

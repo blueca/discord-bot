@@ -21,7 +21,7 @@ module.exports = {
       }
     } catch (err) {
       console.error(err);
-      msg.reply('error finding gif');
+      this.handleError('server', msg);
     }
   },
   handleError(err, msg) {
